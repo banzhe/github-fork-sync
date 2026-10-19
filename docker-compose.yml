@@ -1,0 +1,17 @@
+services:
+  app:
+    image: ghcr.io/${GITHUB_REPOSITORY:-owner/github-fork-sync}:${APP_VERSION:-latest}
+    build:
+      context: .
+    container_name: github-fork-sync
+    restart: unless-stopped
+    ports:
+      - '${APP_PORT:-29176}:29176'
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: /app/data/app.db
+    volumes:
+      - app-data:/app/data
+
+volumes:
+  app-data:

@@ -1,0 +1,17 @@
+node_modules
+.output
+.nitro
+.tanstack
+.git
+.github
+.vscode
+.vite-hooks
+data
+*.db
+*.db-*
+.env
+.env.*
+Dockerfile
+docker-compose.yml
+*.md
+!README.md

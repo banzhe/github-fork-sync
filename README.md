@@ -1,0 +1,58 @@
+# GitHub Fork Sync
+
+## 技术栈
+
+- [TanStack Start](https://tanstack.com/start) + [SolidJS](https://solidjs.com) (文件路由, SSR, Nitro node-server 输出)
+- [Vite+](https://viteplus.dev) (`vp`): 开发/构建, 内置 oxlint + oxfmt + 类型检查
+- [Tailwind CSS v4](https://tailwindcss.com) + [Kobalte](https://kobalte.dev) (shadcn 方式组织的组件)
+- SQLite ([better-sqlite3](https://github.com/WiseLibs/better-sqlite3)) + [Drizzle ORM](https://orm.drizzle.team)
+- [Changesets](https://github.com/changesets/changesets) 版本管理
+
+## 开发
+
+```bash
+vp install
+vp dev
+```
+
+常用命令:
+
+| 命令               | 说明                                    |
+| ------------------ | --------------------------------------- |
+| `vp dev`           | 启动开发服务器 (http://localhost:29176) |
+| `vp check`         | 格式 + lint + 类型检查                  |
+| `vp check --fix`   | 自动修复格式与可修复的 lint 问题        |
+| `vp build`         | 生产构建, 输出到 `.output/`             |
+| `pnpm start`       | 运行生产构建                            |
+| `pnpm db:generate` | 根据 schema 生成迁移                    |
+| `pnpm db:studio`   | 打开 Drizzle Studio                     |
+| `pnpm changeset`   | 记录一次变更                            |
+
+代码风格: 单引号, 无分号, 2 空格缩进, LF 换行 (见 `vite.config.ts` 的 `fmt` 与 `.gitattributes`). 提交前 `vp staged` 会自动运行 `vp check --fix`.
+
+## 组件
+
+组件按 shadcn 的方式组织, 源码直接放在 `src/components/ui/`, 基于 Kobalte 原语 + `cva` + `cn` (`src/lib/utils.ts`). 主题色定义在 `src/styles.css` 的 CSS 变量中, `.dark` 为暗色主题.
+
+新增组件时参照现有文件: 一个组件一个文件, 用 `splitProps` 拆出 `class`, 变体用 `cva` 声明.
+
+## 数据库
+
+- Schema: `src/db/schema.ts`
+- 迁移: `drizzle/`, 修改 schema 后执行 `pnpm db:generate`
+- 服务启动后首次访问数据库时自动执行迁移
+- 环境变量 `DATABASE_URL` 指定数据库文件 (默认 `./data/app.db`)
+
+## 发布
+
+1. 开发时用 `pnpm changeset` 记录变更并随 PR 提交
+2. 合并到 `main` 后 Release 工作流会创建/更新版本 PR
+3. 合并版本 PR 后自动打 `v*` tag, 创建 GitHub Release, 并推送镜像到 `ghcr.io/<owner>/<repo>`
+
+## 部署
+
+```bash
+docker compose up -d
+```
+
+`docker-compose.yml` 默认使用 `ghcr.io/${GITHUB_REPOSITORY}:${APP_VERSION:-latest}` 镜像, 也可 `docker compose up -d --build` 本地构建. 数据保存在 `app-data` 卷中 (`/app/data`), 健康检查地址为 `/api/health`.

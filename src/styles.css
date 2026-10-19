@@ -1,0 +1,113 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fontsource-variable/inter';
+
+@custom-variant dark (&:is(.dark *));
+
+/* 参考 Kumo (kumo-ui.com): 中性灰底 + 白色卡片 + 1px 细边 + 蓝色主色, Cloudflare 橙作点缀 */
+:root {
+  --background: oklch(0.9875 0 0);
+  --foreground: oklch(0.205 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0 0);
+  --elevated: oklch(0.98 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.623 0.214 259.8);
+  --primary-foreground: oklch(1 0 0);
+  --primary-edge: oklch(0.546 0.245 262.9);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.269 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.95 0.05 60);
+  --accent-foreground: oklch(0.5 0.15 50);
+  --brand: oklch(0.71 0.18 50);
+  --destructive: oklch(0.637 0.237 25.3);
+  --destructive-foreground: oklch(1 0 0);
+  --destructive-edge: oklch(0.505 0.213 27.5);
+  --success: oklch(0.95 0.05 163);
+  --success-foreground: oklch(0.432 0.095 166.9);
+  --border: oklch(0.935 0 0);
+  --input: oklch(0.145 0 0 / 0.1);
+  --ring: oklch(0.623 0.214 259.8);
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: oklch(0.1 0 0);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.17 0 0);
+  --card-foreground: oklch(0.97 0 0);
+  --elevated: oklch(0.12 0 0);
+  --popover: oklch(0.17 0 0);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.623 0.214 259.8);
+  --primary-foreground: oklch(1 0 0);
+  --primary-edge: oklch(0.707 0.165 254.6);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.922 0 0);
+  --muted: oklch(0.2 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.3 0.07 50);
+  --accent-foreground: oklch(0.75 0.183 55.9);
+  --brand: oklch(0.71 0.18 50);
+  --destructive: oklch(0.577 0.245 27.3);
+  --destructive-foreground: oklch(1 0 0);
+  --destructive-edge: oklch(0.704 0.191 22.2);
+  --success: oklch(0.28 0.06 165);
+  --success-foreground: oklch(0.905 0.093 164.2);
+  --border: oklch(0.269 0 0);
+  --input: oklch(1 0 0 / 0.12);
+  --ring: oklch(0.707 0.165 254.6);
+}
+
+@theme inline {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-elevated: var(--elevated);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-edge: var(--primary-edge);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-brand: var(--brand);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-edge: var(--destructive-edge);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 0.05);
+  --shadow-thumb: 0 0 1px 0.5px oklch(0 0 0 / 0.12), 0 1px 2px oklch(0 0 0 / 0.08);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background font-sans text-sm text-foreground antialiased;
+  }
+}
