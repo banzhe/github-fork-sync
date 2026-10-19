@@ -39,9 +39,14 @@ vp dev
 ## 数据库
 
 - Schema: `src/db/schema.ts`
+- 数据访问: `src/db/repositories/`, 每张表一个 repository, 业务代码只通过它们读写数据库
 - 迁移: `drizzle/`, 修改 schema 后执行 `pnpm db:generate`
 - 服务启动后首次访问数据库时自动执行迁移
 - 环境变量 `DATABASE_URL` 指定数据库文件 (默认 `./data/app.db`)
+
+## 登录
+
+应用使用单密码登录. 首次访问 `/login` 时输入的密码会成为登录密码 (至少 6 位). 忘记密码时, 删除数据库 `settings` 表中 `key = 'password_hash'` 的行, 再次登录即可重新设置.
 
 ## 发布
 

@@ -27,6 +27,10 @@
 - Solid lint rules are on: never destructure props, use `<For>` for lists and `<Show>` for conditionals.
 - Never edit `src/routeTree.gen.ts`; it is generated.
 - Dev server port is `29176`. Stop it before adding or removing dependencies; on Windows it locks the `better-sqlite3` native module and the install fails.
+- Database access goes only through the repositories in `src/db/repositories/`.
+- Server functions return the shared shape from `src/utils/response.ts`.
+- Pages that need sign-in go under the `_authed` route; protected server functions use `authMiddleware`.
+- The local testing password is always `123456`.
 - `vp build` prints a warning about `output.codeSplitting.groups[0].name`. It comes from Nitro, not this repo; ignore it.
 
 ## Component style: Kumo

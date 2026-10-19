@@ -2,6 +2,7 @@ import { mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 
 import Database from 'better-sqlite3'
+import { sql } from 'drizzle-orm'
 import { drizzle, type BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 
@@ -25,4 +26,10 @@ export function getDb() {
   return db
 }
 
+/** 健康检查用, 数据库不可用时抛错. */
+export function pingDb() {
+  getDb().run(sql`select 1`)
+}
+
 export { schema }
+export type * from './schema'

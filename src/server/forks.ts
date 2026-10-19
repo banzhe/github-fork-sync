@@ -1,8 +1,10 @@
 import { createServerFn } from '@tanstack/solid-start'
-import { desc } from 'drizzle-orm'
 
-import { getDb, schema } from '~/db'
+import { forksRepo } from '~/db/repositories'
+import { ok } from '~/utils/response'
 
-export const listForks = createServerFn({ method: 'GET' }).handler(() =>
-  getDb().select().from(schema.forks).orderBy(desc(schema.forks.createdAt)).all(),
-)
+import { authMiddleware } from './auth'
+
+export const listForks = createServerFn({ method: 'GET' })
+  .middleware([authMiddleware])
+  .handler(() => ok(forksRepo.list()))
