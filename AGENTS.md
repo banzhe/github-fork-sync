@@ -15,6 +15,7 @@
 | `vp install`                  | Install dependencies                          |
 | `pnpm dev`                    | Dev server at http://localhost:29176          |
 | `vp check` / `vp check --fix` | Format + lint + type check / auto-fix         |
+| `vp test`                     | Run tests (Vitest)                            |
 | `vp build`                    | Production build to `.output/`                |
 | `pnpm start`                  | Run the production build                      |
 | `pnpm db:generate`            | Generate a migration after editing the schema |
@@ -28,7 +29,14 @@
 - Never edit `src/routeTree.gen.ts`; it is generated.
 - Dev server port is `29176`. Stop it before adding or removing dependencies; on Windows it locks the `better-sqlite3` native module and the install fails.
 - Database access goes only through the repositories in `src/db/repositories/`.
-- Server functions return the shared shape from `src/utils/response.ts`.
+- Server functions return the shared shape from `src/lib/response.ts`. Components call them through `createAction` from `src/lib/action.ts` (pending state, error message, thrown errors become a failed result) instead of their own try/catch.
+- All GitHub API calls and the GitHub token go through `src/server/github/`. Keep server function handlers thin and put logic in testable modules such as `src/server/sync.ts`.
+
+## Tests
+
+- Vitest via `vp test`; import from `vite-plus/test`. Test files are `src/**/*.test.ts`.
+- `src/test/setup.ts` gives each test file its own temporary SQLite database and empties the tables before each test.
+- Never call GitHub in tests. Add `vi.mock('~/server/github')` to use `src/server/github/__mocks__/index.ts`, then set return values on its `github` fake client (`resetGitHubMock()` in `beforeEach`, `setGitHubConnected(false)` for "no token").
 - Pages that need sign-in go under the `_authed` route; protected server functions use `authMiddleware`.
 - The local testing password is always `123456`.
 - `vp build` prints a warning about `output.codeSplitting.groups[0].name`. It comes from Nitro, not this repo; ignore it.
@@ -50,6 +58,7 @@ After any code or config change, spawn a subagent (the `verify` agent if availab
 
 1. If dependencies changed: `pnpm install --frozen-lockfile`.
 2. `vp check` passes with no warnings.
-3. `vp build` succeeds.
-4. With `pnpm dev` running, `GET /api/health` returns `{"status":"ok"}`. Open the changed pages in a browser: no console errors, and the changed behavior works. For UI changes, check light and dark mode.
-5. Stop any server the subagent started, and report each step as passed or failed.
+3. `vp test` passes.
+4. `vp build` succeeds.
+5. With `pnpm dev` running, `GET /api/health` returns `{"status":"ok"}`. Open the changed pages in a browser: no console errors, and the changed behavior works. For UI changes, check light and dark mode.
+6. Stop any server the subagent started, and report each step as passed or failed.

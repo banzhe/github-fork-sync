@@ -10,8 +10,9 @@ import {
   TextFieldInput,
   TextFieldLabel,
 } from '~/components/ui/text-field'
+import { createAction } from '~/lib/action'
+import { unwrap } from '~/lib/response'
 import { getAuthState, login, MIN_PASSWORD_LENGTH } from '~/server/auth'
-import { unwrap } from '~/utils/response'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
@@ -29,26 +30,18 @@ function Login() {
   const router = useRouter()
   const navigate = useNavigate()
   const [password, setPassword] = createSignal('')
-  const [error, setError] = createSignal<string>()
-  const [pending, setPending] = createSignal(false)
-
-  const onSubmit = async (e: SubmitEvent) => {
-    e.preventDefault()
-    setPending(true)
-    setError(undefined)
-    try {
-      const result = await login({ data: { password: password() } })
-      if (!result.ok) {
-        setError(result.error.message)
-        return
-      }
+  const { run, pending, error } = createAction(async () => {
+    const result = await login({ data: { password: password() } })
+    if (result.ok) {
       await router.invalidate()
       await navigate({ to: '/' })
-    } catch {
-      setError('Something went wrong. Try again.')
-    } finally {
-      setPending(false)
     }
+    return result
+  })
+
+  const onSubmit = (e: SubmitEvent) => {
+    e.preventDefault()
+    void run()
   }
 
   return (

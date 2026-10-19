@@ -44,6 +44,11 @@ export default defineConfig({
     },
     overrides: [
       {
+        // 测试里需要把 mock 断言成真实类型
+        files: ['src/**/*.test.ts', 'src/test/**', 'src/**/__mocks__/**'],
+        rules: { 'typescript/no-unsafe-type-assertion': 'off' },
+      },
+      {
         // Kobalte 多态组件需要收窄 props 类型
         files: ['src/components/ui/**'],
         rules: { 'typescript/no-unsafe-type-assertion': 'off' },
@@ -52,12 +57,16 @@ export default defineConfig({
     ignorePatterns: ['src/routeTree.gen.ts', 'drizzle/**'],
     options: { typeAware: true, typeCheck: true },
   },
+  test: {
+    include: ['src/**/*.test.ts'],
+    environment: 'node',
+    setupFiles: ['src/test/setup.ts'],
+  },
   resolve: { tsconfigPaths: true },
-  plugins: lazyPlugins(() => [
-    devtools(),
-    nitro(),
-    tailwindcss(),
-    tanstackStart(),
-    solidPlugin({ ssr: true }),
-  ]),
+  // 测试只覆盖服务端模块, 不需要这些插件; 加载它们会让 vp test 结束后进程无法退出.
+  plugins: lazyPlugins(() =>
+    process.env.VITEST
+      ? []
+      : [devtools(), nitro(), tailwindcss(), tanstackStart(), solidPlugin({ ssr: true })],
+  ),
 })

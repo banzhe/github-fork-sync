@@ -24,5 +24,8 @@ jobs:
       - name: Format, lint & type check
         run: vp check
 
+      - name: Test
+        run: vp test
+
       - name: Build
         run: vp build

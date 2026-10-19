@@ -22,6 +22,7 @@ vp dev
 | `vp dev`           | 启动开发服务器 (http://localhost:29176) |
 | `vp check`         | 格式 + lint + 类型检查                  |
 | `vp check --fix`   | 自动修复格式与可修复的 lint 问题        |
+| `vp test`          | 运行测试 (Vitest)                       |
 | `vp build`         | 生产构建, 输出到 `.output/`             |
 | `pnpm start`       | 运行生产构建                            |
 | `pnpm db:generate` | 根据 schema 生成迁移                    |
@@ -44,9 +45,23 @@ vp dev
 - 服务启动后首次访问数据库时自动执行迁移
 - 环境变量 `DATABASE_URL` 指定数据库文件 (默认 `./data/app.db`)
 
+## 测试
+
+`vp test` 运行 `src/**/*.test.ts`. 每个测试文件使用独立的临时 SQLite 数据库 (`src/test/setup.ts`). 测试不访问 GitHub: 用 `vi.mock('~/server/github')` 换成 `src/server/github/__mocks__/index.ts` 中的假客户端.
+
 ## 登录
 
 应用使用单密码登录. 首次访问 `/login` 时输入的密码会成为登录密码 (至少 6 位). 忘记密码时, 删除数据库 `settings` 表中 `key = 'password_hash'` 的行, 再次登录即可重新设置.
+
+## 同步 fork
+
+1. 首页填入 GitHub fine-grained personal access token (只支持 `github_pat_` 开头的 token). Repository permissions 需要 Contents: Read and write; 上游改动了 `.github/workflows` 时还需要 Workflows: Read and write. token 明文保存在数据库 `settings` 表中.
+2. 点 Choose repositories 选择要同步的 fork. 同步的是 fork 的默认分支, 与上游同名分支比较; 上游没有同名分支时用上游的默认分支. fork 列表在服务端缓存 10 分钟, 更换或移除 token 后失效.
+3. 点 Check for updates 检测:
+   - GraphQL 批量取两边分支的 head SHA, 相同则已是最新;
+   - 不同时用 REST compare 取 ahead/behind;
+   - 落后上游时调用 `merge-upstream` 同步 (fast-forward 或 merge commit);
+   - 合并有冲突时不同步, 页面上让用户选择: 在 GitHub 上开 PR 解决冲突, 或丢弃 fork 独有的提交.
 
 ## 发布
 

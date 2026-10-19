@@ -1,6 +1,6 @@
 import { createMiddleware, createServerFn } from '@tanstack/solid-start'
 
-import { fail, ok } from '~/utils/response'
+import { fail, ok } from '~/lib/response'
 
 import {
   checkPassword,

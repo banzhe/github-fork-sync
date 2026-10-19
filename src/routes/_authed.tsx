@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/solid-router'
 
+import { unwrap } from '~/lib/response'
 import { getAuthState } from '~/server/auth'
-import { unwrap } from '~/utils/response'
 
 export const Route = createFileRoute('/_authed')({
   beforeLoad: async () => {

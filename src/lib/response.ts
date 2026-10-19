@@ -5,7 +5,14 @@
  * 失败: { ok: false, error: { code, message } }
  */
 
-export type ApiErrorCode = 'BAD_REQUEST' | 'UNAUTHORIZED' | 'INVALID_PASSWORD' | 'INTERNAL'
+export type ApiErrorCode =
+  | 'BAD_REQUEST'
+  | 'UNAUTHORIZED'
+  | 'INVALID_PASSWORD'
+  | 'NOT_FOUND'
+  | 'GITHUB_TOKEN_MISSING'
+  | 'GITHUB_ERROR'
+  | 'INTERNAL'
 
 export type ApiSuccess<T> = { ok: true; data: T }
 export type ApiFailure = { ok: false; error: { code: ApiErrorCode; message: string } }
