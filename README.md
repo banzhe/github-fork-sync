@@ -55,4 +55,4 @@ vp dev
 docker compose up -d
 ```
 
-`docker-compose.yml` 默认使用 `ghcr.io/${GITHUB_REPOSITORY}:${APP_VERSION:-latest}` 镜像, 也可 `docker compose up -d --build` 本地构建. 数据保存在 `app-data` 卷中 (`/app/data`), 健康检查地址为 `/api/health`.
+`docker-compose.yml` 默认使用 `ghcr.io/banzhe/github-fork-sync:${APP_VERSION:-latest}` 镜像, 也可 `docker compose up -d --build` 本地构建. 数据保存在 `app-data` 卷中 (`/app/data`), 健康检查地址为 `/api/health`.

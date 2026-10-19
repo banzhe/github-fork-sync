@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/${GITHUB_REPOSITORY:-owner/github-fork-sync}:${APP_VERSION:-latest}
+    image: ghcr.io/banzhe/github-fork-sync:${APP_VERSION:-latest}
     build:
       context: .
     container_name: github-fork-sync
